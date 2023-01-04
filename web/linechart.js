@@ -4,37 +4,24 @@ $( document ).ready(function() {
 
 	var data = [];
 
-
-
 	var done = function (error, options, response) {
 		$('#loading').fadeOut();
-
-		// console.log(response.rows[1].cells);
-
 		jQuery.each(response.rows, function(index, value) {
 			var row = []
 				row.date = value.cells.date;
-				row.close =	value.cells.close;
-			data.push(row);
+				row.pushups =	value.cells.pushups;
+			if (row.pushups != '0' & row.pushups != ''){
+			data.push(row)
+			};
 		});
-
-
-
 		data.shift();
-		
 		lineChart(data);
-
-		//console.log(data);
-		
-		
 	};
 
 	function lineChart(data) {
 		var margin = {top: 20, right: 20, bottom: 30, left: 50},
 			width = 960 - margin.left - margin.right,
 			height = 500 - margin.top - margin.bottom;
-
-		// 4/10/2012
 
 		var formatDate = d3.time.format("%Y-%m-%d");
 
@@ -54,7 +41,7 @@ $( document ).ready(function() {
 
 		var line = d3.svg.line()
 			.x(function(d) { return x(d.date); })
-			.y(function(d) { return y(d.close); });
+			.y(function(d) { return y(d.pushups); });
 
 		var svg = d3.select(".container-fluid").append("svg")
 			.attr("width", width + margin.left + margin.right)
@@ -62,21 +49,15 @@ $( document ).ready(function() {
 		  .append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		// console.log(data);
-
-		// for (var i = data.length - 1; i >= 0; i--) {
-		// 	console.log(data[i]);
-		// }
-
 		data.forEach(function(d) {
 		  d.date = formatDate.parse(d.date);
-		  d.close = +d.close;
+		  d.pushups = +d.pushups;
 		  return d;
 		  console.log(d.date);
 		});
 
 		  x.domain(d3.extent(data, function(d) { return d.date; }));
-		  y.domain(d3.extent(data, function(d) { return d.close; }));
+		  y.domain(d3.extent(data, function(d) { return d.pushups; }));
 
 		svg.append("g")
 		  .attr("class", "x axis")
@@ -91,7 +72,7 @@ $( document ).ready(function() {
 				.attr("y", 6)
 				.attr("dy", ".71em")
 				.style("text-anchor", "end")
-				.text("Close ($)");
+				.text("pushups ($)");
 
 		svg.append("path")
 		      .datum(data)
