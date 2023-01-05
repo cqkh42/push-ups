@@ -59,25 +59,51 @@ $( document ).ready(function() {
 		  x.domain(d3.extent(data, function(d) { return d.date; }));
 		  y.domain(d3.extent(data, function(d) { return d.pushups; }));
 
-		svg.append("g")
-		  .attr("class", "x axis")
-		  .attr("transform", "translate(0," + height + ")")
-		  .call(xAxis);
+		 var radius = Math.min(width, height) / 2 - margin
+		 var color = d3.scaleOrdinal()
+  .domain(data)
+  .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
 
-		svg.append("g")
-		  .attr("class", "y axis")
-		  .call(yAxis)
-			.append("text")
-				.attr("transform", "rotate(-90)")
-				.attr("y", 6)
-				.attr("dy", ".71em")
-				.style("text-anchor", "end")
-				.text("pushups ($)");
+// Compute the position of each group on the pie:
+var pie = d3.pie()
+  .value(function(d) {return d})
+var data_ready = pie(d3.entries(data))
 
-		svg.append("path")
-		      .datum(data)
-		      .attr("class", "line")
-		      .attr("d", line);
+// Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+//svg
+//  .selectAll('whatever')
+//  .data(data_ready)
+//  .enter()
+//  .append('path')
+//  .attr('d', d3.arc()
+//    .innerRadius(0)
+//    .outerRadius(radius)
+//  )
+//  .attr('fill', function(d){ return(color(d.data.key)) })
+//  .attr("stroke", "black")
+//  .style("stroke-width", "2px")
+//  .style("opacity", 0.7)
+
+
+//		svg.append("g")
+//		  .attr("class", "x axis")
+//		  .attr("transform", "translate(0," + height + ")")
+//		  .call(xAxis);
+//
+//		svg.append("g")
+//		  .attr("class", "y axis")
+//		  .call(yAxis)
+//			.append("text")
+//				.attr("transform", "rotate(-90)")
+//				.attr("y", 6)
+//				.attr("dy", ".71em")
+//				.style("text-anchor", "end")
+//				.text("pushups ($)");
+//
+//		svg.append("path")
+//		      .datum(data)
+//		      .attr("class", "line")
+//		      .attr("d", line);
 
 	
 	}
