@@ -1,119 +1,81 @@
-$( document ).ready(function() {
 
-	var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/126AA3xhrNrZ7wPhTGp15gfyBb3LP7AfHEZ-gQfXGbrg/edit#gid=0';
+// set the dimensions and margins of the graph
+var width = 450
+    height = 450
+    margin = 40
 
-	var data = [];
+// The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+const radius = Math.min(width, height) / 2 - margin
+const innerRadius = 150
 
-	var done = function (error, options, response) {
-		$('#loading').fadeOut();
-		jQuery.each(response.rows, function(index, value) {
-			var row = []
-				row.date = value.cells.date;
-				row.pushups =	value.cells.pushups;
-			if (row.pushups != '0' & row.pushups != ''){
-			data.push(row)
-			};
-		});
-		data.shift();
-		lineChart(data);
-	};
+// append the svg object to the div called 'my_dataviz'
+const svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-	function lineChart(data) {
-		var margin = {top: 20, right: 20, bottom: 30, left: 50},
-			width = 960 - margin.left - margin.right,
-			height = 500 - margin.top - margin.bottom;
+const dayOfYear =
+  Math.floor((new Date() - new Date((new Date()).getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+const innerData = {'completed': dayOfYear-1, 'togo': 365 - dayOfYear + 1}
 
-		var formatDate = d3.time.format("%Y-%m-%d");
+function color(key){
+  if (key == 'completed'){
+  return "#008000"}
+  return "#98abc5"
+}
 
-		var x = d3.time.scale()
-			.range([0, width]);
+function opacity(key){
+  if (key=='completed'){
+  return 0.7}
+  return 0.3
+}
 
-		var y = d3.scale.linear()
-			.range([height, 0]);
+const pie = d3.pie().sort(null)
+  .value(function(d) {return d.value; })
 
-		var xAxis = d3.svg.axis()
-			.scale(x)
-			.orient("bottom");
+function drawPushUps(pushupData){
 
-		var yAxis = d3.svg.axis()
-			.scale(y)
-			.orient("left");
+var data_ready = pie(d3.entries(pushupData))
+svg
+  .selectAll('whatever')
+  .data(data_ready)
+  .enter()
+  .append('path')
+  .attr('d', d3.arc()
+    .innerRadius(innerRadius)         // This is the size of the donut hole
+    .outerRadius(radius)
+  )
+  .attr('fill', function(d){ return(color(d.data.key)) })
+  .attr("stroke", "black")
+  .style("stroke-width", "2px")
+  .style("stroke-opacity", 0.3)
+  .style("opacity", d => opacity(d.data.key))
+}
 
-		var line = d3.svg.line()
-			.x(function(d) { return x(d.date); })
-			.y(function(d) { return y(d.pushups); });
+function drawInner(){
+var data_ready = pie(d3.entries(innerData))
 
-		var svg = d3.select(".container-fluid").append("svg")
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-		  .append("g")
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+svg
+  .selectAll('inner')
+  .data(data_ready)
+  .enter()
+  .append('path')
+  .attr('d', d3.arc()
+    .innerRadius(innerRadius-5)         // This is the size of the donut hole
+    .outerRadius(innerRadius)
+  )
+  .attr('fill', function(d){ return(color(d.data.key)) })
+  .style("opacity", d => opacity(d.data.key))
+}
 
-		data.forEach(function(d) {
-		  d.date = formatDate.parse(d.date);
-		  d.pushups = +d.pushups;
-		  return d;
-		  console.log(d.date);
-		});
+function parseData(data){
+var d = d3.sum(data, d=> d.pushups)
+var pushupData = {'completed': d, 'togo': 10000-d}
+drawPushUps(pushupData)
+drawInner()
+console.log(pushupData)
+}
 
-		  x.domain(d3.extent(data, function(d) { return d.date; }));
-		  y.domain(d3.extent(data, function(d) { return d.pushups; }));
-
-		 var radius = Math.min(width, height) / 2 - margin
-		 var color = d3.scaleOrdinal()
-  .domain(data)
-  .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
-
-// Compute the position of each group on the pie:
-var pie = d3.pie()
-  .value(function(d) {return d})
-var data_ready = pie(d3.entries(data))
-
-// Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-//svg
-//  .selectAll('whatever')
-//  .data(data_ready)
-//  .enter()
-//  .append('path')
-//  .attr('d', d3.arc()
-//    .innerRadius(0)
-//    .outerRadius(radius)
-//  )
-//  .attr('fill', function(d){ return(color(d.data.key)) })
-//  .attr("stroke", "black")
-//  .style("stroke-width", "2px")
-//  .style("opacity", 0.7)
-
-
-//		svg.append("g")
-//		  .attr("class", "x axis")
-//		  .attr("transform", "translate(0," + height + ")")
-//		  .call(xAxis);
-//
-//		svg.append("g")
-//		  .attr("class", "y axis")
-//		  .call(yAxis)
-//			.append("text")
-//				.attr("transform", "rotate(-90)")
-//				.attr("y", 6)
-//				.attr("dy", ".71em")
-//				.style("text-anchor", "end")
-//				.text("pushups ($)");
-//
-//		svg.append("path")
-//		      .datum(data)
-//		      .attr("class", "line")
-//		      .attr("d", line);
-
-	
-	}
-
-	$('#properati').sheetrock({
-		url: mySpreadsheet,
-		query: "select *",
-		callback: done
-	});
-
-	
-
-});
+d3.csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTcCYisJ3ihPZ5ObmJbvNitDOp8eEB93Gf3CU9odNlv2ia-qALPv0dmAEQLklNnLfpS-TQJyYyDT8Xl/pub?gid=0&single=true&output=csv", 0,parseData)
