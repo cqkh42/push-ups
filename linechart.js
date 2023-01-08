@@ -7,15 +7,15 @@ var width = 1000
 // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
 //const radius = Math.min(width, height) / 2 - margin
 const radius = 450
-const innerRadius = 150
+const innerRadius = 300
 
 // append the svg object to the div called 'my_dataviz'
-const svg = d3.select(".container-fluid")
-  .append("svg")
+const svg = d3.select(".chart")
+//  .append("svg")
 //    .attr("width", width)
 //    .attr("height", height)
-.attr("preserveAspectRatio", "xMinYMin meet")
-.attr("viewBox", "0 0 1000 1000")
+//.attr("preserveAspectRatio", "xMinYMin meet")
+//.attr("viewBox", "0 0 1000 1000")
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -25,8 +25,8 @@ const innerData = {'completed': dayOfYear-1, 'togo': 365 - dayOfYear + 1}
 
 function color(key){
   if (key == 'completed'){
-  return "#008000"}
-  return "#98abc5"
+  return "#4CAF50"}
+  return "#CFD8DC"
 }
 
 function opacity(key){
@@ -54,7 +54,11 @@ svg
   .attr("stroke", "black")
   .style("stroke-width", "2px")
   .style("stroke-opacity", 0.3)
-  .style("opacity", d => opacity(d.data.key))
+  .style("opacity", d => opacity(d.data.key));
+
+  svg.append("text")
+   .attr("text-anchor", "middle")
+   .text(pushupData.completed);
 }
 
 function drawInner(){

@@ -4,36 +4,23 @@ html{
 height:100%;
 padding:0;
 margin:0;
-background-color:#f2f2f2;
+background-color: #f2f2f2;
 font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   position: relative;
-  min-height: 100%;
 }
 
 body{
+top: 0;
+position: absolute;
 height:100%;
 padding:0;
 margin:0;
- padding-top: 50px;
-  margin-bottom: 60px;
-  font-family: "Rubik Book", "Helvetica", sans-serif !important;
-}
-
-path{
-    stroke-width: 0.1;
-    stroke: black;
-    opacity: 0;
-}
-
-div{
-  margin: auto;
-  width: 100%;
-  text-align: center;
-  padding: 5px;
+width: 100%;
 }
 
 svg{
-margin: 10px;
+width: 100%;
+height: 85%;
 }
 
 .footer {
@@ -41,8 +28,14 @@ margin: 10px;
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
-  background-color: #f5f5f5;
+background-color: #f2f2f2;
 }
 text {
-  font-family: "Rubik Book", "Helvetica", sans-serif !important;
+  color: #212121;
+}
+
+h1 {
+color: #212121;
+text-align: center;
+padding-top: 5px;
 }
