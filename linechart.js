@@ -56,9 +56,25 @@ svg
   .style("stroke-opacity", 0.3)
   .style("opacity", d => opacity(d.data.key));
 
-  svg.append("text")
+
+}
+
+function drawText(number){
+  const text = svg.append("text")
    .attr("text-anchor", "middle")
-   .text(pushupData.completed);
+   .text(0);
+
+   text
+   .transition()
+  .tween("text", function() {
+     var selection = d3.select(this);    // selection of node being transitioned
+     var start = d3.select(this).text(); // start value prior to transition
+     var end = number;                     // specified end value
+     var interpolator = d3.interpolateNumber(start,end); // d3 interpolator
+     return function(t) {selection.text(Math.round(interpolator(t)).toLocaleString());};  // return value
+
+  })
+  .duration(1000);
 }
 
 
@@ -83,18 +99,9 @@ var d = d3.sum(data, d=> d.pushups)
 var pushupData = {'completed': d, 'togo': 10000-d}
 drawPushUps(pushupData)
 drawInner()
-//
-//text.transition()
-//  .tween("text", function() {
-//     var selection = d3.select(this);    // selection of node being transitioned
-//     var start = d3.select(this).text(); // start value prior to transition
-//     var end = 1000;                     // specified end value
-//     var interpolator = d3.interpolateNumber(start,end); // d3 interpolator
-//
-//     return function(t) { selection.text(Math.round(interpolator(t))); };  // return value
-//
-//  })
-//  .duration(10000);
+drawText(pushupData.completed)
+
+
 
 //console.log(pushupData)
 }
