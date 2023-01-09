@@ -6,9 +6,9 @@ const margin = 40;
 const radius = 450;
 const innerRadius = 300;
 
-const svg = d3.select("svg")
-  .append("g")
-  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+const svg = d3.select("g")
+//  .append("g")
+//  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 const dayOfYear =
   Math.floor(
@@ -18,6 +18,12 @@ const innerData = {
   "togo": 365 - dayOfYear + 1
 };
 
+function arc(inner, outer) {
+return d3.arc()
+      .innerRadius(inner) // This is the size of the donut hole
+      .outerRadius(outer)
+}
+
 function draw(data, inner, outer, selector){
   const pie = d3.pie().sort(null)
     .value(d => d.value);
@@ -26,11 +32,9 @@ function draw(data, inner, outer, selector){
     .data(pie(d3.entries(data)))
     .enter()
     .append("path")
-    .attr("d", d3.arc()
-      .innerRadius(inner) // This is the size of the donut hole
-      .outerRadius(outer)
+    .attr("class", (d) => d.data.key)
+    .attr("d", arc(inner, outer)
     )
-    .attr("class", (d) => d.data.key);
 }
 
 function drawText(number) {
@@ -52,6 +56,10 @@ function drawText(number) {
 }
 
 function parseData(data) {
+d3.select(".loading")
+  .transition()
+  .duration(2000)
+  .attr("opacity", 0);
   var d = d3.sum(data, (d) => d.pushups);
   var pushupData = {
     "completed": d,
