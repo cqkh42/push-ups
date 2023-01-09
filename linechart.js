@@ -61,6 +61,7 @@ svg
    .text(pushupData.completed);
 }
 
+
 function drawInner(){
 var data_ready = pie(d3.entries(innerData))
 
@@ -82,6 +83,19 @@ var d = d3.sum(data, d=> d.pushups)
 var pushupData = {'completed': d, 'togo': 10000-d}
 drawPushUps(pushupData)
 drawInner()
+//
+//text.transition()
+//  .tween("text", function() {
+//     var selection = d3.select(this);    // selection of node being transitioned
+//     var start = d3.select(this).text(); // start value prior to transition
+//     var end = 1000;                     // specified end value
+//     var interpolator = d3.interpolateNumber(start,end); // d3 interpolator
+//
+//     return function(t) { selection.text(Math.round(interpolator(t))); };  // return value
+//
+//  })
+//  .duration(10000);
+
 //console.log(pushupData)
 }
 

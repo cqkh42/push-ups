@@ -32,6 +32,11 @@ background-color: #f2f2f2;
 }
 text {
   color: #212121;
+  text-anchor: middle;
+  font-size: 12em;
+  alignment-baseline: middle;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
 }
 
 h1 {
